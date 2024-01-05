@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title><%= title %></title>
+
+</head>
+
+<body>
+
+    <div>
+        <div><%= error.status %></h1>
+            <h2><%= error.message %></h2>
+            <h4><%= error.stack %></h4>
+            <% if (error.status === 404) { %>
+                <a href="/" class="btn-go-home">GO BACK HOME</a>
+            <% } %>
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>

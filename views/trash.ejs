@@ -1,0 +1,109 @@
+<%- include('partials/header'); %>
+<div class="manageUser-container">
+    <div id="title">
+        <h2>Delete all unused files</h2>
+    </div>
+
+    <div id="users-table">
+        <div class="trashModal">
+            <div class="trashModalHeader">
+                <h2 class="trashModalTitle"></h2>
+                <i class="fa-regular fa-circle-xmark" onclick="closeTrashModal()"></i>
+            </div>
+            <div class="trashModalBody">
+
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Folder</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="users-table">
+
+                <% if (trashData && trashData.length > 0) { %>
+                <% trashData.forEach(trash => { %>
+                <tr id="<%= trash.folder %>">
+                    <td class="name" onclick="openTrashModal('<%-trash.files%>', '<%-trash.folder%>')">
+                        <img src="/images/folder.png" style="border-radius: 0; border:none;" />
+                        <span style="text-transform: capitalize; color: white; margin-left: 10px;">
+                            <%= trash.folder %>
+                        </span>
+                    </td>
+                    <td>
+                        <%= trash.quantity %>
+                    </td>
+                    <td class="manage">
+                        <img src="/images/trash.png" alt="Delete" onclick="deleteTrash('<%-trash.files%>', '<%-trash.folder%>', this)" />
+                    </td>
+                </tr>
+                <% }) %>
+                <% } %>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const trashModal = document.querySelector(".trashModal");
+    const trashModalTitle = document.querySelector(".trashModalTitle");
+    const trashModalBody = document.querySelector(".trashModalBody");
+
+    function openTrashModal(trashFiles, folder) {
+        trashModal.classList.add('active');
+        trashModalTitle.innerHTML =
+        `See all trash files in <span style="text-transform: capitalize;">${folder}</span> directory.`;
+
+        const filesArr = trashFiles.split(",");
+        
+        let div = "<div>";
+
+            filesArr.forEach(file => {
+                 div += `<img width='100px' alt='not found' src=/uploads/${folder}/${file} >`
+            });
+
+        div += "</div>";
+
+        trashModalBody.innerHTML = div;
+    }
+
+    function closeTrashModal() {
+        trashModal.classList.remove('active');
+        
+        
+    }
+
+    const deleteTrash = async (trashFiles, folder, target) => {
+        const folderRow = document.getElementById(folder);
+        const parentEl = target.parentElement;
+        parentEl.innerHTML = "<span>Processing...</span>";
+        const response = await fetch('/trash/delete', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                folder,
+                trashFiles
+            })
+        });
+        const result = await response.json();
+        
+        if (response.status == 200) {
+            alert(result.message);
+            folderRow.remove();
+            closeTrashModal();
+        } else {
+            alert(result.message);
+            window.location.reload();
+        }
+    }
+</script>
+
+</body>
+
+</html>
