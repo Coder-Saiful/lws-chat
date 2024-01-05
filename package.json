@@ -7,6 +7,9 @@
     "dev": "nodemon index",
     "start": "node index.js"
   },
+  "engines": {
+    "node": "20.10.0"
+  },
   "author": "Coder Saiful",
   "license": "ISC",
   "dependencies": {
